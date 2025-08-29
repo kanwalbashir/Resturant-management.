@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+     <link rel="stylesheet" href="../css/food.css">
+     <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>  
+<!----HEADER SECTION START-->
+<header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+    <nav class="navbar">
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+            <!-- User icon -->
+            <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+        
+            <!-- Dropdown -->
+            <div id="userDropdown"
+                style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                <p id="fullNameDisplay"></p>
+                <button id="logoutBtn" class="btn">Logout</button>
+            </div>
+        </div>
+    </div>
+</header>
+<!----HEADER SECTION END-->
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+    <input type="search" id="search-box" placeholder="Search Here...">
+    <button type="submit"><i class="fas fa-search"></i></button>
+    <i class="fas fa-times" id="close"></i>
+</form>
+<!--home-->
+<section class="home" id="home">
+    <div class=" slide">
+        <div class="content">
+            <h3 class="fade-item delay1">Our menu</h3>
+            <span class="span  fade-item delay2"> delicious Food</span>
+        <div class="dishes" id="menuDishes"></div>
+        </div>
+</div>
+</section>
+<!--menu section-->
+<section class="menu" id="menu">
+</section>
+<!--footer section-->
+<footer class="footer" >
+    <div class="box-containers">
+        <div class="box">
+            <h2>quick links</h2>
+            <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+        </div>
+        <div class="box">
+            <h2>contact info</h2>
+            <a href="tel:+032-450-51065">+032-450-51065</a>
+            <a href="tel:+03278736385">+032-787-36385</a>
+            <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+            <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+            <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a> 
+        </div>
+        <div class="box">
+            <h2>opening hours</h2>
+            <i href="#">Every day</i>
+            <i href="#">10:00Am - 12:00Pm</i>
+            <i href="#">location</i>
+        <i href="#">Garjah,Gujranwala</i>
+            <a href="#"></a>
+        </div>
+        <div class="box">
+            <h2>follow us</h2>
+            <a href="https://www.facebook.com">facebook</a>
+            <a href="https://www.facebook.com">twitter</a>
+            <a href="https://www.facebook.com">instagram</a>
+            <a href="https:/a/www.facebook.com">linkedIn</a>
+        </div>
+    </div>
+    <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+</footer>
+<!--javascript-->
+<script>
+    const API_URL = "http://localhost:8080/api/category";
+    // Group dishes by category
+    function groupByCategory(dishes) {
+        return dishes.reduce((acc, dish) => {
+            if (!acc[dish.category]) acc[dish.category] = [];
+            acc[dish.category].push(dish);
+            return acc;
+        }, {});
+    }
+    async function loadMenu() {
+            try {
+                const res = await fetch(API_URL);
+                const dishes = await res.json();
+                const menuSection = document.getElementById("menu");
+                menuSection.innerHTML = "";
+                const grouped = groupByCategory(dishes);
+
+                for (const category in grouped) {
+                    // Category heading
+                    const heading = document.createElement("h1");
+                    heading.className = "heading";
+                    heading.textContent = category;
+                    menuSection.appendChild(heading);
+
+                    // Box container
+                    const boxContainer = document.createElement("div");
+                    boxContainer.className = "box-container";
+
+                    grouped[category].forEach(d => {
+                        const box = document.createElement("div");
+                        box.className = "box";
+
+                        //for detail page
+                        const query = new URLSearchParams({ id: d._id }).toString();
+
+                        box.innerHTML = `
+<a href="detail.html?${query}">
+    <div class="image">
+        <img src="${d.img}" alt="${d.name}">
+        <h3 >${d.name}</h3>
+        <p class="availability" style="font-size: 1.5rem;color:${d.available ? 'green' : 'red'}; font-weight:bold;">
+            ${d.available ? "Available" : "Not Available"}
+        </p>
+        <p style="font-size: 1.3rem; color:#333; font-weight:bold;">
+            Delivery Fee: ${d.deliveryFee ? d.deliveryFee + " PKR" : "N/A"}
+        </p>
+    </div>
+</a>
+`;
+                        boxContainer.appendChild(box);
+                    });
+
+                    menuSection.appendChild(boxContainer);
+                }
+            } catch (err) {
+                console.error("Error loading menu:", err);
+            }
+        }
+
+    loadMenu();    
+</script>
+<script src="../script/food.js"></script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste haven </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+     <link rel="stylesheet" href="../css/food.css">
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>  
+<!----HEADER SECTION START-->
+<header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+    <nav class="navbar">
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+            <!-- User icon -->
+            <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+        
+            <!-- Dropdown -->
+            <div id="userDropdown"
+                style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                <p id="fullNameDisplay"></p>
+                <button id="logoutBtn" class="btn">Logout</button>
+            </div>
+        </div>
+         </div>
+</header>
+<!----HEADER SECTION END-->
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+    <input type="search" id="search-box" placeholder="Search Here...">
+    <button type="submit"><i class="fas fa-search"></i></button>
+    <i class="fas fa-times" id="close"></i>
+</form>
+<!----HOME SECTION START-->
+<section class="home1" id="home1">
+    <div class="slide">
+        <div class="content">
+            <span class="fade-item delay1 subheading">Welcome to</span>
+            <h2 class="fade-item delay2" id="dynamicTitle">Taste Haven.</h2>
+            <p class="fade-item delay3">
+                Whether you want to order online or book a table to dine in.
+                We make it easy to enjoy delicious food, your way..
+            </p>
+            <a href="Reservation.html" class="btn fade-item delay4">Book a Table</a>
+        </div>
+    </div>
+</section>
+<section class="menu">
+    <h2 class="heading">our Popular Dishes</h2>
+    <div id="popularDishes" class="dish-grid"></div>
+    <form id="btn-center">
+        <a href="Menu.html" class="btn">Explore menu</a>
+    </form>
+</section>
+
+<!--announcement bar-->  
+</section>
+<div class="announcement-bar" id="announcementBar" style="display:none;">
+    <span id="announcementMessage"></span>
+    <span class="close-btn" onclick="closeAnnouncement()">×</span>
+</div>
+<!--chef-->
+<section class="chef" id="chef">
+    <h3 class="subheading">Team Members</h3>
+    <h1 class="heading">Our Master Chefs</h1>
+    <div class="chef-container" id="chefContainer">
+        <!-- Chef boxes will be loaded here -->
+    </div>
+</section>
+<!--reserve-->
+<section class="images" >
+    <div class="tb">
+    <h1 class="heading">Make A Reservation</h1>
+</div>
+    <div id="btn-center">
+    <a href="Reservation.html" class="btn">Reserve a table</a>
+</div>
+</div>
+</section>
+<h1 class="heading">Give your feedback</h1>
+<form id="reviewForm" enctype="multipart/form-data">
+    <input type="text" name="name" id="userName" placeholder="Your Name" required>
+    <input type="number" name="rating" min="1" max="5" placeholder="Rating (1-5)" required>
+    <textarea name="message" placeholder="Your Review" required></textarea>
+    <input type="file" name="image" accept="image/*">
+    <button class="btn  "type="submit">Submit</button>
+</form>
+<!--for sending review-->
+<section class="review" id="review">
+    <h3 class="subheading">customer's review</h3>
+    <h1 class="heading">what they say</h1>
+    <div class="slider-container" id="reviewSlider"></div>
+    <div class="dots" id="reviewDots"></div>
+</section>
+<!--galllery-->
+<section class="gl">
+    <h1 class="heading">Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+    <div class="popup" id="popup" onclick="closePopup()">
+        <img id="popupImg" src="" alt="">
+    </div>
+</section>
+<!--order status-->
+<div id="orderList">
+    <!-- Orders will appear here -->
+</div>
+<!----HOME SECTION END------->
+<!--footer section-->
+<footer class="footer" >
+    <div class="box-containers">
+        <div class="box">
+        <h2>quick links</h2>
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a>    
+        </div>
+        <div class="box">
+            <h2>contact info</h2>
+            <a href="tel:+032-450-51065">+032-450-51065</a>
+            <a href="tel:+03278736385">+032-787-36385</a>
+            <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+            <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+            <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a> 
+        </div>
+        <div class="box">
+            <h2>opening hours</h2>
+            <i href="#">Every day</i>
+            <i href="#">10:00Am - 12:00Pm</i>
+            <i href="#">location</i>
+            <i href="#">Garjah,Gujranwala</i>
+            <a href="#"></a>
+        </div>
+        <div class="box">
+            <h2>follow us</h2>
+            <a href="https://www.facebook.com">facebook</a>
+            <a href="https://www.facebook.com">twitter</a>
+            <a href="https://www.facebook.com">instagram</a>
+            <a href="https:/a/www.facebook.com">linkedIn</a>
+        </div>
+    </div>
+    <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+</footer>
+<!--javascript-->
+<script>
+    const API_URL = "http://localhost:8080/api/reviews";
+    // Load Reviews 
+    async function loadReviews() {
+        try {
+            const res = await fetch(API_URL); 
+            const reviews = await res.json();
+            console.log("Fetched reviews:", reviews);
+            const slider = document.getElementById("reviewSlider");
+            const dots = document.getElementById("reviewDots");
+            slider.innerHTML = "";
+            dots.innerHTML = "";
+            reviews.forEach((r, i) => {
+                slider.innerHTML += `
+              <div class="slidess ${i === 0 ? 'active' : ''}">
+                <div class="user">
+                    ${r.image
+                        ? `<img src="http://localhost:8080${r.image}" alt="">`
+                        : `<i class="fas fa-user user-icon"></i>`}
+                  <div class="user-info">
+                    <h3>${r.name}</h3>
+                    <div class="stars">
+                     ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}
+                    </div>
+                  </div>
+                </div>
+                <p>${r.message}</p>
+              </div>
+            `;
+                dots.innerHTML += `<div class="dot ${i === 0 ? 'active' : ''}"></div>`;
+            });
+
+            setupSlider();
+        } catch (err) {
+            console.error("Error loading reviews:", err);
+        }
+    }
+    // Submit Review
+    document.getElementById("reviewForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                body: formData
+            });
+            if (!res.ok) throw new Error("Upload failed");
+            const data = await res.json();
+            alert(" Review submitted successfully!");
+            e.target.reset();
+            loadReviews(); // reload reviews after submit
+        } catch (err) {
+            console.error(err);
+            alert(" Error submitting review");
+        }
+    });
+    //  Announcement 
+    async function loadAnnouncement() {
+        try {
+            const res = await fetch('http://localhost:8080/api/announcement');
+            const data = await res.json();
+            if (data && data.message) {
+                document.getElementById('announcementMessage').textContent = data.message;
+                document.getElementById('announcementBar').style.display = 'block';
+            }
+        } catch (err) {
+            console.error("Error loading announcement:", err);
+        }
+    }
+    function closeAnnouncement() {
+        document.getElementById('announcementBar').style.display = 'none';
+    }
+    // slider 
+    document.addEventListener("DOMContentLoaded", () => {
+        loadReviews();
+        loadAnnouncement();
+    });
+    function setupSlider() {
+            const slides = document.querySelectorAll(".slidess");
+            const dots = document.querySelectorAll(".dot");
+            let current = 0;
+            function showSlide(index) {
+                slides.forEach((s, i) => s.classList.toggle("active", i === index));
+                dots.forEach((d, i) => d.classList.toggle("active", i === index));
+                current = index;
+            }
+            dots.forEach((dot, i) => {
+                dot.addEventListener("click", () => showSlide(i));
+            });
+            // Auto slide every 5 sec
+            setInterval(() => {
+                showSlide((current + 1) % slides.length);
+            }, 5000);
+        }
+//chef
+    async function loadChefs() {
+        try {
+            const res = await fetch('http://localhost:8080/api/chefs');
+            const chefs = await res.json();
+            const chefContainer = document.getElementById('chefContainer');
+
+            chefs.forEach(chef => {
+                const div = document.createElement('div');
+                div.classList.add('chef-box');
+                div.innerHTML = `
+                    <div class="image">
+                        <img src="${chef.image}" alt="${chef.name}">
+                    </div>
+                    <h3 class="chef-name">${chef.name}</h3>
+                    <p>${chef.description}</p>
+                `;
+                chefContainer.appendChild(div);
+            });
+        } catch (err) {
+            console.error('Error loading chefs:', err);
+        }
+    }
+
+    loadChefs();
+
+    //for menu 4 pics 
+         const hAPI_URL = "http://localhost:8080/api/category"; // Your backend API
+
+            async function loadPopularDishes() {
+                try {
+                    const res = await fetch(`${hAPI_URL}?popular=true`);
+                    const dishes = await res.json();
+
+                    const container = document.getElementById("popularDishes");
+                    if (!container) {
+                        console.error(" popularDishes container not found!");
+                        return;
+                    }
+
+                    container.innerHTML = "";
+                    dishes.slice(0, 4).forEach(d => {
+                        const dishCard = document.createElement("div");
+                        dishCard.classList.add("dish-card");
+                        dishCard.innerHTML = `
+            <img src="${d.img || '/uploads/default.png'}" alt="${d.name}" />
+            <h3>${d.name}</h3>
+          `;
+                        container.appendChild(dishCard);
+                    });
+                } catch (err) {
+                    console.error("Error loading popular dishes:", err);
+                }
+            }
+                    document.addEventListener("DOMContentLoaded", loadPopularDishes);
+// for gallery
+     async function initGallery() {
+            try {
+                const res = await fetch("http://localhost:8080/api/gallery");
+                const images = await res.json();
+
+                const gallery = document.getElementById("gallery");
+                gallery.innerHTML = "";
+
+                images.forEach(image => {
+                    if (!image.imageUrl) return;
+
+                    const imgEl = document.createElement("img");
+                    const imageUrl = image.imageUrl.startsWith('http')
+                        ? image.imageUrl
+                        : new URL(image.imageUrl, 'http://localhost:8080').href;
+
+                    imgEl.src = imageUrl;
+                    imgEl.alt = image.name || "Food";
+                    imgEl.onclick = () => openPopup(imgEl);
+
+                    gallery.appendChild(imgEl);
+                });
+            } catch (err) {
+                console.error("Error loading gallery:", err);
+            }
+        }
+
+        // call the async function
+        initGallery();
+
+    // Popup open
+    window.openPopup = function (img) {
+        document.getElementById("popupImg").src = img.src;
+        document.getElementById("popup").style.display = "flex";
+    }
+    // Popup close
+    window.closePopup = function () {
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+<script src="../script/food.js" defer></script>
+</body>
+</html>

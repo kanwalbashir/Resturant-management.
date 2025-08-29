@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Taste Haven</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Admin Panel</a>
+        <nav class="navbar">
+            <a href="admin.html">Dashboard</a>
+            <a href="admin-menu.html"> Dishes</a>
+            <a href="admin-orders.html">Orders</a>
+            <a href="admin-reservations.html">Reservations</a>
+            <a href="admin-users.html">Users</a>
+            <a href="admin-messages.html">Messages</a>
+            <a href="admin-recipies.html">Recipies</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <a href="#" id="logoutBtn" class="fas fa-sign-out-alt"></a>
+        </div>
+        </header>
+    <h1>All Bookings</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>People</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="bookings"></tbody>
+    </table>
+    <footer class="footer">
+        <div class="credit">Admin Panel © 2025 - <span>Taste Haven</span></div>
+    </footer>
+<script>
+    async function loadBookings() {
+        const res = await fetch("http://localhost:8080/api/bookings");
+        const bookings = await res.json();
+        document.getElementById("bookings").innerHTML = bookings.map(b => `
+        <tr>
+            <td>${b.name}</td>
+            <td>${b.email}</td>
+            <td>${b.people}</td>
+            <td>${new Date(b.date).toLocaleDateString()}</td>
+            <td>${b.time}</td>
+            <td>${b.phone}</td>
+            <td>${b.status}</td>
+            <td>
+                <button class="edit-btn" onclick="confirmBooking('${b._id}')">Confirm</button>
+                <button class="delete-btn"onclick="rejectBooking('${b._id}')">Reject</button>
+            </td>
+        </tr>
+    `).join("");
+    }
+
+    async function confirmBooking(id) {
+        await fetch(`http://localhost:8080/api/bookings/${id}/confirm`, { method: "PUT" });
+        loadBookings();
+    }
+
+    async function rejectBooking(id) {
+        await fetch(`http://localhost:8080/api/bookings/${id}/reject`, { method: "PUT" });
+        loadBookings();
+    }
+
+    loadBookings();
+</script>
+<script src="../script/admin.js"></script>
+</body>
+</html>

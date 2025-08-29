@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/food.css">
+    <title>Login</title>
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste Haven</a>
+        <nav class="navbar">
+            <a href="food.html">Home</a>
+            <a href="Menu.html">Menu</a>
+            <a href="Order.html">Order</a>
+            <a href="Reservation.html">Reservation</a>
+            <a href="About.html">About</a>
+            <a href="Recipes.html">Recipes</a>
+            <a href="Contact.html">Contact us</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+        <i class=" fas fa-user"></i>
+        </div>
+            <!-- Dropdown -->
+            <div id="userDropdown"
+                style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                <p id="fullNameDisplay"></p>
+                <button id="logoutBtn" class="btn">Logout</button>
+            </div>
+        </div>
+        </div>
+    </header>
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+    <input type="search" id="search-box" placeholder="Search Here...">
+    <button type="submit"><i class="fas fa-search"></i></button>
+    <i class="fas fa-times" id="close"></i>
+</form>
+<div id="error-msg" style="color:red; display:none;"></div>
+<section class="login-container">
+        <div class="login">
+            <h2 class="heading">Login</h2>
+            <div class="error" id="error-msg" style="display:none; color:red;"></div>
+            <form id="loginForm" >
+                <div class="password">
+                    <input type="email"inputmode="email" autocomplete="new-password"  id="email" placeholder="Email" required>
+                    <div class="boxs"><i class="fas fa-user"></i></div>
+                </div>
+                <div class="password">
+                    <input type="password"autocomplete="new-password"   id="password" placeholder="Password" required>
+                    <div class="boxs"><i class="fas fa-eye " id="togglePassword" ></i></div>
+                </div>
+                <div class="forget-password">
+                    <a href="forget_password.html">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <p>Don't have an account? <a href="register.html" class="btns">Register</a></p>
+            </form>
+        </div>
+    </section>
+<script>
+    // Show error messages
+            function showError(msg) {
+        const errorDiv = document.getElementById("error-msg");
+            errorDiv.style.display = "block";
+            errorDiv.textContent = msg;
+    }
+            // Login function
+            async function loginUser(email, password) {
+        try {
+            const res = await fetch("http://localhost:8080/api/auth/login", {
+                method: "POST",
+            headers: {"Content-Type": "application/json" },
+            body: JSON.stringify({email, password})
+            });
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message); 
+            // Save token & user info
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("userId", data.user.id);
+            //  Redirect based on role
+            if (data.user.role === "admin") {
+                window.location.href = "../admin/admin.html";
+            } else {
+                window.location.href = "food.html";
+            }
+        } catch (err) {
+                alert("Login failed: " + err.message);
+        }
+    }
+            // Attach login form
+            document.getElementById("loginForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            loginUser(email, password);
+    });
+    </script>
+<script src="../script/food.js"></script>
+</body>
+</html>

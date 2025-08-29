@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/food.css">
+    <title>Register</title>
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste Haven</a>
+        <nav class="navbar">
+            <a href="food.html">Home</a>
+            <a href="Menu.html">Menu</a>
+            <a href="Order.html">Order</a>
+            <a href="Reservation.html">Reservation</a>
+            <a href="About.html">About</a>
+            <a href="Recipes.html">Recipes</a>
+            <a href="Contact.html">Contact us</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+            <i class=" fas fa-user"></i>
+             </div>
+    </header>
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+    <input type="search" id="search-box" placeholder="Search Here...">
+    <button type="submit"><i class="fas fa-search"></i></button>
+    <i class="fas fa-times" id="close"></i>
+</form>
+    <section class="register-container">
+        <div class="register">
+            <h2 class="heading">Register</h2>
+            <div class="error" id="error-msg" style="display:none; color:red;"></div>
+            <form id="registerForm">
+                <div class="password">
+                    <input type="email" id="email" placeholder="Email" required>
+                    <div class="boxs"><i class="fas fa-envelope"></i></div>
+                </div>
+                <div class="password">
+                    <input type="tel" id="phone" autocomplete="phone" placeholder="Phone number" required>
+                    <div class="boxs"><i class="fas fa-phone-alt"></i></div>
+                </div>
+                <div class="password">
+                    <input type="text" id="name"autocomplete="new-password"  placeholder="Username" required>
+                    <div class="boxs"><i class="fas fa-user"></i></div>
+                </div>
+                <div class="password">
+                    <input type="password" id="password"autocomplete="new-password"  placeholder="Password"pattern=".{6,}"
+                        title="Six or more characters"required>
+                    <div class="boxs"><i class="fas fa-eye " id="togglePassword"></i></div>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <p>Already have an account? <a href="login.html" class="btns">Login</a></p>
+            </form>
+        </div>
+    </section>
+    <div id="otpSection">
+        <h3>Verify Phone</h3>
+        <input type="text" id="otp" placeholder="Enter OTP" required />
+        <button class="btn" id="verifyOtpBtn">Verify OTP</button>
+    </div>
+    
+    <p id="message"></p>
+   <script>
+    const registerForm = document.getElementById("registerForm");
+    const otpSection = document.getElementById("otpSection");
+    const messageEl = document.getElementById("message");
+
+    //Register user (creates account with isVerified=false and sends OTP)
+    registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+        try {
+            const res = await fetch("http://localhost:8080/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, phone, password })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+        alert( "OTP sent! Please check your email.")
+                otpSection.style.display = "block";
+                localStorage.setItem("email", email);
+            } else {
+                alert("Failed: " + data.message)
+            }
+        } catch (err) {
+            messageEl.textContent = "Error: " + err.message;
+        }
+    });
+    //  Verify OTP
+    document.getElementById("verifyOtpBtn").addEventListener("click", async () => {
+        const otp = document.getElementById("otp").value;
+        const email = localStorage.getItem("email");
+        if (!otp || !email) return alert("Enter OTP");
+        try {
+            const res = await fetch("http://localhost:8080/api/auth/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, otp })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                alert("Registration complete! You can now login.");
+                otpSection.style.display = "none";
+                localStorage.removeItem("email");
+                window.location.href = "login.html";
+            } else {
+                alert("OTP verification failed: " + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server error");
+        }
+    });
+</script>
+    <script src="../script/food.js"></script>
+</body>
+</html>

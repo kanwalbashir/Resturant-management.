@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Users</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Admin Panel</a>
+        <nav class="navbar">
+            <a href="admin.html">Dashboard</a>
+            <a href="admin-menu.html">Dishes</a>
+            <a href="admin-orders.html">Orders</a>
+            <a href="admin-reservations.html">Reservations</a>
+            <a href="admin-users.html">Users</a>
+            <a href="admin-messages.html">Messages</a>
+            <a href="admin-recipies.html">Recipies</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <a href="#" id="logoutBtn" class="fas fa-sign-out-alt"></a>
+        </div>
+    </header>
+    <h1>Manage Users</h1>
+    <h2>Add New Admin</h2>
+    <form class="addChefForm " id="addAdminForm">
+        <input type="text" id="adminName" autocomplete="new-password"placeholder="Full Name" required>
+        <input type="email" id="adminEmail" placeholder="Email" required>
+        <input type="password" id="adminPassword" autocomplete="new-password"placeholder="Password" required>
+        <button type="submit" class="btn">Add</button>
+    </form>
+    <p id="adminResponseMsg"></p>
+    <hr>
+    <!-- Admins Table -->
+<h2>Admins</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="adminTableBody"></tbody>
+</table>
+<h2>Users</h2>
+    <table >
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Users will be loaded here -->
+        </tbody>
+    </table>
+<footer class="footer">
+    <div class="credit">Admin Panel © 2025 - <span>Taste Haven</span></div>
+</footer>
+<script>
+    const API_URL = "http://localhost:8080/api/auth/users";
+    const ADD_ADMIN_URL = "http://localhost:8080/api/auth/register";
+
+    // Fetch all users from backend
+    async function fetchUsers() {
+        const res = await fetch(API_URL, { cache: "no-store" });
+        return res.json();
+    }
+    //  users into table 
+    function render(users, tableId) {
+        document.getElementById(tableId).innerHTML = users.map(u => `
+        <tr>
+            <td>${u._id}</td>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${u.role || "user"}</td>
+            <td><button class="delete-btn" onclick="removeUser('${u._id}')">Delete</button></td>
+        </tr>
+    `).join("");
+    }
+    // Load all users
+    async function loadUsers() {
+        try {
+            const users = await fetchUsers();
+            render(users.filter(u => u.role === "admin"), "adminTableBody");
+            render(users.filter(u => !u.role || u.role === "user"), "userTableBody");
+        } catch (err) {
+            alert("Error loading users: " + err.message);
+        }
+    }
+    // Delete a user
+    async function removeUser(id) {
+        if (!confirm("Delete this user?")) return;
+        try {
+            const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            if (res.ok) {
+                alert("User deleted!");
+                loadUsers();
+            } else {
+                alert("Failed to delete user.");
+            }
+        } catch (err) {
+            alert("Error deleting user: " + err.message);
+        }
+    }
+    // Add new admin
+    document.getElementById("addAdminForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const name = adminName.value, email = adminEmail.value, password = adminPassword.value;
+        try {
+            const res = await fetch(ADD_ADMIN_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password, role: "admin" })
+            });
+            if (res.ok) {
+                alert(" New admin added!");
+                await loadUsers();
+                e.target.reset();
+            } else {
+                const errData = await res.json();
+                alert("Failed to add admin: " + (errData.message || "Unknown error"));
+            }
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
+    });
+    // Initial load
+    window.addEventListener("DOMContentLoaded", loadUsers);
+</script>
+<script src="../script/admin.js"></script>
+</body>
+
+</html>

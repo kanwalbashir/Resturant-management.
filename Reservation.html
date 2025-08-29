@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+     <link rel="stylesheet" href="../css/food.css">
+     <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+    </head>
+<body>   
+<!----HEADER SECTION START-->
+<header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+    <nav class="navbar">
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+            <!-- User icon -->
+            <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+            <!-- Dropdown -->
+            <div id="userDropdown"
+                style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                <p id="fullNameDisplay"></p>
+                <button id="logoutBtn" class="btn">Logout</button>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+    <input type="search" id="search-box" placeholder="Search Here...">
+    <button type="submit"><i class="fas fa-search"></i></button>
+    <i class="fas fa-times" id="close"></i>
+</form>
+<!--home-->
+<section class="home" id="home">
+    <div class=" slide">
+        <div class="content">
+            <h3 class="fade-item delay1">Reservation</h3>
+            <span class="span fade-item delay2">Book A Table Now </span>
+        </div>
+</div>
+</section>
+<!--home-->
+<h1 class="heading  margin"> Book Table</h1>
+<section class="reservation" id="reservation">
+    <form id="reservationForm">
+        <!-- hidden input to store the selected table number -->
+        <input type="hidden" id="tableNumber" name="tableNumber">
+
+        <div class="input">
+            <label>Your full name ?</label>
+            <input type="text" name="name" id="userName"required>
+        </div>
+        <div class="input">
+            <label>Your email address ?</label>
+            <input type="email" name="email" id="userEmail" required>
+        </div>
+        <div class="input">
+            <label>Your phone number ?</label>
+            <input type="tel" name="phone" id="userPhone" required>
+        </div>
+        <div class="input">
+            <label>How many people ?</label>
+            <input type="number" name="people" id="people" required>
+        </div>
+        <div class="input">
+            <label>Select table?</label>
+            <input type="number" name="table" id="table" required min="1" max="20">
+            <small id="tableWarning" style="color:red; display:none;">This table is already booked for the selected date
+                and time!</small>
+        </div>
+        <div class="input">
+            <label>What time ?</label>
+            <input type="text" name="time" id="time" placeholder="00:00" required>
+        </div>
+        <div class="input">
+            <label>What date ?</label>
+            <input type="date" name="date" id="date" required>
+        </div>
+        <div id="sub">
+            <button type="submit" class="btn largebtn">Submit</button>
+        </div>
+    </form>
+    <!-- Booking Summary Modal -->
+    <div id="summaryBox" style="display:none; border:1px solid #333; padding:15px; margin-top:20px;">
+        <h3>Booking Summary</h3>
+        <p id="summaryDetails"></p>
+        <p><strong>Table Price:</strong> $20</p>
+        <p id="foodPrice"></p>
+        <p id="totalPrice"></p>
+        <button id="confirmBtn">Confirm Booking</button>
+        <button id="rejectBtn">Reject Booking</button>
+    </div>
+</section>
+<!--footer section-->
+<footer class="footer" >
+    <div class="box-containers">
+        <div class="box">
+            <h2>quick links</h2>
+            <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+        </div>
+        <div class="box">
+            <h2>contact info</h2>
+            <a href="tel:+032-450-51065">+032-450-51065</a>
+            <a href="tel:+03278736385">+032-787-36385</a>
+            <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+            <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+            <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a> 
+        </div>
+        <div class="box">
+            <h2>opening hours</h2>
+            <i href="#">Every day</i>
+            <i href="#">10:00Am - 12:00Pm</i>
+            <i href="#">location</i>
+            <i href="#">Garjah,Gujranwala</i>
+            <a href="#"></a>
+        </div>
+        <div class="box">
+            <h2>follow us</h2>
+            <a href="https://www.facebook.com">facebook</a>
+            <a href="https://www.facebook.com">twitter</a>
+            <a href="https://www.facebook.com">instagram</a>
+            <a href="https:/a/www.facebook.com">linkedIn</a>
+        </div>
+    </div>
+    <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+</footer>
+<script>
+    const form = document.getElementById("reservationForm");
+    const summaryBox = document.getElementById("summaryBox");
+    const summaryDetails = document.getElementById("summaryDetails");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const rejectBtn = document.getElementById("rejectBtn");
+
+    // Disable past dates
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("date").setAttribute("min", today);
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const bookingData = {
+            name: document.getElementById("userName").value,
+            email: document.getElementById("userEmail").value,
+            phone: document.getElementById("userPhone").value,
+            people: Number(document.getElementById("people").value),
+            tableNumber: document.getElementById("table").value,
+            time: document.getElementById("time").value,
+            date: document.getElementById("date").value
+        };
+        // Show booking summary
+        summaryDetails.innerHTML = `
+            <b>Name:</b> ${bookingData.name} <br>
+            <b>Email:</b> ${bookingData.email} <br>
+            <b>Phone:</b> ${bookingData.phone} <br>
+            <b>People:</b> ${bookingData.people} <br>
+            <b>Table #:</b> ${bookingData.tableNumber} <br>
+            <b>Date:</b> ${bookingData.date} <br>
+            <b>Time:</b> ${bookingData.time}
+        `;
+        summaryBox.style.display = "block";
+       
+        const tableInput = document.getElementById("table");
+        const tableWarning = document.getElementById("tableWarning");
+        const dateInput = document.getElementById("date");
+        const timeInput = document.getElementById("time");
+        // Disable past dates
+        const today = new Date();
+        const minDate = today.toISOString().split("T")[0];
+        // within 2 
+        const twoMonthsLater = new Date();
+        twoMonthsLater.setMonth(today.getMonth() + 2);
+        // --- Check table availability ---
+        async function checkTableAvailability() {
+            const tableNumber = tableInput.value;
+            const date = dateInput.value;
+            const time = timeInput.value;
+
+            if (!tableNumber || !date || !time) return;
+            try {
+                const res = await fetch(`http://localhost:8080/api/bookings`);
+                const bookings = await res.json();
+                const conflict = bookings.find(b =>
+                    b.tableNumber == tableNumber &&
+                    b.date === date &&
+                    b.time === time &&
+                    b.status === "Confirmed"
+                );
+                if (conflict) {
+                    tableWarning.style.display = "inline";
+                    confirmBtn.disabled = true;
+                } else {
+                    tableWarning.style.display = "none";
+                    confirmBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error("Error checking table availability:", err);
+            }
+        }
+        // Listen for changes to re-check
+        tableInput.addEventListener("input", checkTableAvailability);
+        dateInput.addEventListener("change", checkTableAvailability);
+        timeInput.addEventListener("input", checkTableAvailability);
+        // Confirm booking
+        confirmBtn.onclick = async () => {
+            try {
+                const res = await fetch("http://localhost:8080/api/bookings", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(bookingData)
+                });
+                const data = await res.json();
+                if (res.status === 400) {
+                    alert(data.message); // Table already booked
+                } else {
+                    alert(data.message);
+                    summaryBox.style.display = "none";
+                    form.reset();
+                }
+            } catch (err) {
+                console.error("Error submitting booking:", err);
+                alert("Something went wrong. Please try again.");
+            }
+        };
+        // Reject booking
+        rejectBtn.onclick = () => {
+            summaryBox.style.display = "none";
+        };
+    });
+    const tableInput = document.getElementById("table");
+    const tableWarning = document.getElementById("tableWarning");
+    const dateInput = document.getElementById("date");
+    const timeInput = document.getElementById("time");
+    // Check availability when date, time, or table changes
+    async function checkTableAvailability() {
+        const tableNumber = tableInput.value;
+        const date = dateInput.value;
+        const time = timeInput.value;
+        if (!tableNumber || !date || !time) return;
+        try {
+            const res = await fetch(`http://localhost:8080/api/bookings`);
+            const bookings = await res.json();
+            const conflict = bookings.find(b =>
+                b.tableNumber == tableNumber &&
+                b.date === date &&
+                b.time === time &&
+                b.status === "Confirmed"
+            );
+            if (conflict) {
+                tableWarning.style.display = "inline";
+                confirmBtn.disabled = true;
+            } else {
+                tableWarning.style.display = "none";
+                confirmBtn.disabled = false;
+            }
+        } catch (err) {
+            console.error("Error checking table availability:", err);
+        }
+    }
+    tableInput.addEventListener("input", checkTableAvailability);
+    dateInput.addEventListener("change", checkTableAvailability);
+    timeInput.addEventListener("input", checkTableAvailability);
+</script>
+<script src="../script/food.js"></script>
+</body>
+</html>

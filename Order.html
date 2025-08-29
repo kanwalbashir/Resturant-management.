@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/food.css">
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+        <nav class="navbar">
+            <a href="food.html">Home</a>
+            <a href="Menu.html">Menu</a>
+            <a href="Order.html">Order</a>
+            <a href="Reservation.html">Reservation</a>
+            <a href="About.html">About</a>
+            <a href="Recipes.html">Recipes</a>
+            <a href="Contact.html">Contact us</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+            <div id="userMenu" style="position:relative">
+                <!-- User icon -->
+                <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+                <!-- Dropdown -->
+                <div id="userDropdown"
+                    style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                    <p id="fullNameDisplay"></p>
+                    <button id="logoutBtn" class="btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SEARCH -->
+    <form id="search-form" onsubmit="return searchFood()">
+        <input type="search" id="search-box" placeholder="Search Here...">
+        <button type="submit"><i class="fas fa-search"></i></button>
+        <i class="fas fa-times" id="close"></i>
+    </form>
+    <section class="home" id="home">
+        <div class=" slide">
+            <div class="content">
+                <h3 class="fade-item delay1 ">Order Now</h3>
+                <span class="span fade-item delay2 "> fast services </span>
+            </div>
+        </div>
+    </section>
+    <!-- Delivery Form -->
+    <h2 class="heading">Order Form</h2>
+    <form id="orderForm">
+        <h3>Delivery Details</h3>
+        <input type="text" id="userName" placeholder="Full Name" required>
+        <input type="tel" id="userPhone" placeholder="Phone Number" required>
+        <input type="email" id="userEmail" placeholder="Email" required>
+        <textarea id="address" placeholder="Delivery Address" required></textarea>
+        <button type="submit" class="btn">Proceed to Summary</button>
+    </form>
+    <div id="orderSummary" style="display:none;">
+        <h3>Order Summary</h3>
+        <p><strong>Name:</strong> <span id="sumName"></span></p>
+        <p><strong>Phone:</strong> <span id="sumPhone"></span></p>
+        <p><strong>Email:</strong> <span id="sumEmail"></span></p>
+        <p><strong>Address:</strong> <span id="sumAddress"></span></p>
+        <div id="orderItems"></div>
+        <h3 id="deliveryCharges"></h3>
+        <h3 id="deliveryTime"></h3>
+        <h3 id="orderTotal"></h3>
+    
+        <button onclick="addMoreItems()" style="background:green; margin-top:10px;">+ Add More Items</button>
+        <button onclick="cancelOrder()" style="background:red; margin-top:10px;">Cancel Order</button>
+        <button onclick="confirmOrder()"style="background:blue; margin-top:10px;">Confirm Order</button>
+    </div>
+    
+    <script>
+           let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            // when user clicks "Order Now"
+            const params = new URLSearchParams(window.location.search);
+            const dish = params.get("dish");
+            const qty = parseInt(params.get("qty")) || 1;
+            const price = parseFloat(params.get("price")) || 0;
+            const img = params.get("img") || "../img/placeholder.png";
+            const deliveryFee = 150;
+            const deliveryTime = "30 - 45 minutes";
+            // Add dish to cart 
+            if (dish) {
+                const existing = cart.find(c => c.dish === dish);
+                if (existing) {
+                    existing.qty += qty;
+                    existing.total += price * qty;
+                } else {
+                    cart.push({ dish, qty, price, img, total: price * qty });
+                }
+                localStorage.setItem("cart", JSON.stringify(cart));
+            }
+            //  Render Cart / Order Summary 
+            function renderOrderSummary() {
+                const orderItemsDiv = document.getElementById("orderItems");
+                orderItemsDiv.innerHTML = "";
+                let subtotal = 0;
+
+                cart.forEach((item, i) => {
+                    subtotal += item.total;
+                    const div = document.createElement("div");
+                    div.className = "orderItem";
+                    div.innerHTML = `
+                <span>
+                    <img src="${item.img}" width="60" height="60" style="object-fit:cover; border-radius:5px;">
+                    ${item.dish} ×
+                    <input type="number" min="1" value="${item.qty}" id="qty-${i}" style="width:50px;">
+                </span>
+                <span>Rs. ${item.total}</span>
+                <button id="del-${i}" style="background:red;color:#fff;border:none;padding:2px 5px;">Delete</button>
+            `;
+                    orderItemsDiv.appendChild(div);
+                    // Quantity change
+                    document.getElementById(`qty-${i}`).addEventListener("change", e => {
+                        const q = parseInt(e.target.value);
+                        if (q < 1) return;
+                        cart[i].qty = q;
+                        cart[i].total = cart[i].price * q;
+                        localStorage.setItem("cart", JSON.stringify(cart));
+                        renderOrderSummary();
+                    });
+                    // Delete item
+                    document.getElementById(`del-${i}`).addEventListener("click", () => {
+                        cart.splice(i, 1);
+                        localStorage.setItem("cart", JSON.stringify(cart));
+                        renderOrderSummary();
+                    });
+                });
+                // Totals
+                const totalAmount = subtotal > 0 ? subtotal + deliveryFee : 0;
+                document.getElementById("deliveryCharges").textContent =
+                    subtotal > 0 ? "Delivery available in Gujranwala: Rs. " + deliveryFee : "";
+                document.getElementById("orderTotal").textContent =
+                    "Total Amount: Rs. " + totalAmount;
+                document.getElementById("deliveryTime").textContent =
+                    subtotal > 0 ? "Estimated Delivery: " + deliveryTime : "";
+            }
+
+            renderOrderSummary();
+  // --- Save Form Data ---
+            function saveFormData() {
+                const formData = {
+                    username: document.getElementById("userName").value,
+                    userphone: document.getElementById("userPhone").value,
+                    address: document.getElementById("address").value,
+                    userEmail:document.getElementById("userEmail").value
+                };
+                localStorage.setItem("formData", JSON.stringify(formData));
+            }
+
+            // Auto-save form on every input
+            ["userName", "userPhone", "address","userEmail"].forEach(id => {
+                document.getElementById(id).addEventListener("input", saveFormData);
+            });
+
+            // --- Load Form Data ---
+            function loadFormData() {
+                const formData = JSON.parse(localStorage.getItem("formData")) || {};
+                if (formData.username) document.getElementById("userName").value = formData.name;
+                if (formData.userphone) document.getElementById("userPhone").value = formData.phone;
+                if (formData.address) document.getElementById("address").value = formData.address;
+                 if (formData.address) document.getElementById("userEmail").value = formData.email;
+            }
+            loadFormData();
+            // --- Form Submit ---
+            document.getElementById("orderForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                if (cart.length === 0) {
+                    alert("Please add at least one food item.");
+                    window.location.href = "Menu.html";
+                    return;
+                }
+                saveFormData();
+
+                document.getElementById("sumName").textContent = document.getElementById("userName").value;
+                document.getElementById("sumPhone").textContent = document.getElementById("userPhone").value;
+                document.getElementById("sumAddress").textContent = document.getElementById("address").value;
+                document.getElementById("sumEmail").textContent = document.getElementById("userEmail").value;
+                document.getElementById("orderSummary").style.display = "block";
+                renderOrderSummary();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            });
+        // Confirm Order 
+      async function confirmOrder() {
+            const name = document.getElementById("userName").value.trim();
+            const phone = document.getElementById("userPhone").value.trim();
+            const address = document.getElementById("address").value.trim();
+          const email = document.getElementById("userEmail").value.trim();
+            if (!name || !phone || !address) {
+                alert("Please fill all details before placing order.");
+                return;
+            }
+            if (cart.length === 0) {
+                alert("You cannot place an empty order.");
+                return;
+            }
+            const items = cart.map(item => ({
+                name: item.dish,  
+                img: item.img,
+                qty: item.qty,
+                price: item.price,
+                total: item.total
+            }));
+            const deliveryFee = 150;
+            const total = items.reduce((sum, it) => sum + it.total, 0) + deliveryFee;
+            const orderData = { name, phone,email, address, items, total };
+            try {
+                const res = await fetch("http://localhost:8080/api/orders", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderData)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert("Order placed successfully!");
+                    document.getElementById("orderForm").reset();
+                    document.getElementById("orderSummary").style.display = "none";
+                    cart = [];
+                    localStorage.removeItem("cart");
+                } else {
+                    alert("Error placing order: " + (data.error || "Unknown"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Network error");
+            }
+        }
+    //Cancel Order 
+    function cancelOrder() {
+        if (confirm("Are you sure you want to cancel this order?")) {
+            cart = [];
+            localStorage.removeItem("cart");
+            document.getElementById("orderSummary").style.display = "none";
+            alert("Order has been canceled.");
+        }
+    }
+    //  Add More Items 
+    function addMoreItems() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.location.href = "Menu.html";
+    }
+</script>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="box-containers">
+            <div class="box">
+                <h2>Quick Links</h2>
+                <a href="food.html">Home</a>
+                <a href="Menu.html">Menu</a>
+                <a href="Order.html">Order</a>
+                <a href="Reservation.html">Reservation</a>
+                <a href="About.html">About</a>
+                <a href="Recipes.html">Recipes</a>
+                <a href="Contact.html">Contact us</a>
+            </div>
+            <div class="box">
+                <h2>Contact Info</h2>
+                <a href="tel:+032-450-51065">+032-450-51065</a>
+                <a href="tel:+03278736385">+032-787-36385</a>
+                <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+            </div>
+            <div class="box">
+                <h2>Opening Hours</h2>
+                <i>Every day</i>
+                <i>10:00Am - 12:00Pm</i>
+                <i>Location</i>
+                <i>Garjakh, Gujranwala</i>
+            </div>
+        </div>
+        <div class="credit">Copyright @ 2025 by <span>HDK</span></div>
+    </footer>
+    <script src="../script/food.js"></script>
+</body>
+</html>
+</html>

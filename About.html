@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+    <link rel="stylesheet" href="../css/food.css">
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+    <!----HEADER SECTION START-->
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+        <nav class="navbar">
+            <a href="food.html">Home</a>
+            <a href="Menu.html">Menu</a>
+            <a href="Order.html">Order</a>
+            <a href="Reservation.html">Reservation</a>
+            <a href="About.html">About</a>
+            <a href="Recipes.html">Recipes</a>
+            <a href="Contact.html">Contact us</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+            <!-- User icon -->
+            <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+        
+            <!-- Dropdown -->
+            <div id="userDropdown"
+                style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                <p id="fullNameDisplay"></p>
+                <button id="logoutBtn" class="btn">Logout</button>
+            </div>
+        </div>
+        </div>
+    </header>
+    <!----HEADER SECTION END-->
+    <!-- SEARCH  -->
+    <form id="search-form" onsubmit="return searchFood()">
+        <input type="search" id="search-box" placeholder="Search Here...">
+        <button type="submit"><i class="fas fa-search"></i></button>
+        <i class="fas fa-times" id="close"></i>
+    </form>
+    <!--home-->
+    <section class="home" id="home">
+        <div class=" slide">
+            <div class="content">
+                <h3 class="fade-item delay1">about us</h3>
+                <span class="span fade-item delay2">why choose us </span>
+            </div>
+        </div>
+    </section>
+    <!--about section-->
+    <!-- Timeline -->
+    <section class="timeline">
+        <div class="event left">
+            <h3>2018</h3>
+            <p>Taste Haven was born as a small family restaurant.</p>
+        </div>
+        <div class="event right">
+            <h3>2020</h3>
+            <p>Launched online delivery and reached our first 5,000 customers.</p>
+        </div>
+        <div class="event left">
+            <h3>2022</h3>
+            <p>Expanded to multiple cities with a stronger digital presence.</p>
+        </div>
+        <div class="event right">
+            <h3>Today</h3>
+            <p>We proudly serve thousands of happy food lovers every day!</p>
+        </div>
+    </section>
+    <!-- mission and vision section -->
+    <section class="mission-vision">
+        <h2 class="heading">Our Mission & Vision</h2>
+        <div class="content-box">
+            <div class="mission">
+                <h3>Our Mission</h3>
+                <p>To serve the most authentic, flavorful, and comforting meals inspired by traditional Pakistani
+                    recipes, while providing an exceptional dining experience.</p>
+            </div>
+            <div class="vision">
+                <h3>Our Vision</h3>
+                <p>To become the leading name in Desi cuisine, known not only for taste but for creating meaningful
+                    connections through food across the globe.</p>
+            </div>
+        </div>
+    </section>
+    <!--footer section-->
+    <footer class="footer">
+        <div class="box-containers">
+            <div class="box">
+                <h2>quick links</h2>
+                <a href="food.html">Home</a>
+                <a href="Menu.html">Menu</a>
+                <a href="Order.html">Order</a>
+                <a href="Reservation.html">Reservation</a>
+                <a href="About.html">About</a>
+                <a href="Recipes.html">Recipes</a>
+                <a href="Contact.html">Contact us</a>
+            </div>
+            <div class="box">
+                <h2>contact info</h2>
+                <a href="tel:+032-450-51065">+032-450-51065</a>
+                <a href="tel:+03278736385">+032-787-36385</a>
+                <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+                <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+                <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a>
+            </div>
+            <div class="box">
+                <h2>opening hours</h2>
+                <i>Every day</i>
+                <i>10:00Am - 12:00Pm</i>
+                <i>location</i>
+                <i>Garjakh, Gujranwala</i>
+            </div>
+            <div class="box">
+                <h2>follow us</h2>
+                <a href="https://www.facebook.com">facebook</a>
+                <a href="https://www.facebook.com">twitter</a>
+                <a href="https://www.facebook.com">instagram</a>
+                <a href="https://www.facebook.com">linkedIn</a>
+            </div>
+        </div>
+        <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+    </footer>
+    <script src="../script/food.js"></script>
+</body>
+</html>

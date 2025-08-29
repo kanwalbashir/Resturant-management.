@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+     <link rel="stylesheet" href="../css/food.css">
+     <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+    <nav class="navbar">
+      <a href="food.html">Home</a>
+      <a href="Menu.html">Menu</a>
+      <a href="Order.html">Order</a>
+      <a href="Reservation.html">Reservation</a>
+      <a href="About.html">About</a> 
+      <a href="Recipes.html">Recipes</a>
+      <a href="Contact.html">Contact us</a>  
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+          <!-- User icon -->
+          <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+        
+          <!-- Dropdown -->
+          <div id="userDropdown"
+            style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+            <p id="fullNameDisplay"></p>
+            <button id="logoutBtn" class="btn">Logout</button>
+          </div>
+        </div>
+    </div>
+</header>
+<!----HEADER SECTION END-->
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+  <input type="search" id="search-box" placeholder="Search Here...">
+  <button type="submit"><i class="fas fa-search"></i></button>
+</form>
+<div class="detail">
+  <div class="container">
+    <img id="food-img" src="" alt="Food Image">
+    <h1 id="food-name">Loading...</h1>
+    <p class="desc" id="food-desc"></p>
+    <div class="price" id="food-price"></div>
+    <div class="discount" id="food-discount"></div>
+
+    <div class="quantity">
+      Quantity:
+      <input type="number" id="qty" value="1" min="1" onchange="updateTotal()">
+    </div>
+    <div class="total" id="total-price"></div>
+    <a class="btn" href="javascript:void(0)" onclick="orderNow()">Order Now</a>
+  </div>
+</div>
+<!--footer section-->
+<footer class="footer">
+  <div class="box-containers">
+    <div class="box">
+      <h2>quick links</h2>
+      <a href="food.html">Home</a>
+      <a href="Menu.html">Menu</a>
+      <a href="Order.html">Order</a>
+      <a href="Reservation.html">Reservation</a>
+      <a href="About.html">About</a>
+      <a href="Recipes.html">Recipes</a>
+      <a href="Contact.html">Contact us</a>
+    </div>
+    <div class="box">
+      <h2>contact info</h2>
+      <a href="tel:+032-450-51065">+032-450-51065</a>
+      <a href="tel:+03278736385">+032-787-36385</a>
+      <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+      <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+      <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a>
+    </div>
+    <div class="box">
+      <h2>opening hours</h2>
+      <i href="#">Every day</i>
+      <i href="#">10:00Am - 12:00Pm</i>
+      <i href="#">location</i>
+      <i href="#">Garjah,Gujranwala</i>
+      <a href="#"></a>
+    </div>
+    <div class="box">
+      <h2>follow us</h2>
+      <a href="https://www.facebook.com">facebook</a>
+      <a href="https://www.facebook.com">twitter</a>
+      <a href="https://www.facebook.com">instagram</a>
+      <a href="https:/a/www.facebook.com">linkdIn</a>
+    </div>
+  </div>
+  <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+</footer>
+<script>
+  let deliveryFee = 0;
+
+    async function loadDish() {
+      const params = new URLSearchParams(window.location.search);
+      const dishId = params.get("id");
+      try {
+        // Fetch all dishes
+        const res = await fetch(`http://localhost:8080/api/category/${dishId}`);
+        if (!res.ok) throw new Error("Failed to fetch dishes");
+        const dish = await res.json();
+        if (!dish) {
+          document.querySelector(".container").innerHTML = "<h2>Dish not found</h2>";
+          return;
+        }
+
+        // Populate data
+        document.getElementById("food-img").src = dish.img || "../img/placeholder.png";
+        document.getElementById("food-name").textContent = dish.name;
+        document.getElementById("food-desc").textContent = dish.desc || "No description available";
+        document.getElementById("food-price").textContent = "Price: Rs. " + dish.price;
+        document.getElementById("food-discount").textContent = dish.discount ? "Discount: " + dish.discount + "%" : "";
+        deliveryFee = dish.deliveryFee || 0;
+
+        // "Order Now" button
+        const orderBtn = document.querySelector(".btn[onclick='orderNow()']");
+        const existingFee = document.getElementById("delivery-fee");
+        if (existingFee) existingFee.remove();
+        if (deliveryFee > 0) {
+          const feeEl = document.createElement("p");
+          feeEl.id = "delivery-fee";
+          feeEl.textContent = "Delivery Fee: Rs. " + deliveryFee;
+          feeEl.style.fontWeight = "bold";
+          orderBtn.parentNode.insertBefore(feeEl, orderBtn);
+        }
+
+        // Show availability
+        const availabilityEl = document.createElement("p");
+        availabilityEl.style.fontWeight = "bold";
+        availabilityEl.style.margin = "1rem 0";
+        if (!dish.available) {
+          availabilityEl.style.color = "red";
+          availabilityEl.textContent = "Not Available";
+          orderBtn.style.display = "none";
+        }
+        document.querySelector(".container").appendChild(availabilityEl);
+
+      } catch (error) {
+        console.error("Error loading dish:", error);
+        document.querySelector(".container").innerHTML = "<h2>Error loading dish</h2>";
+      }
+    }
+
+    // Check login before going to Order page
+    function orderNow() {
+      const userData = JSON.parse(sessionStorage.getItem("user") || localStorage.getItem("user") || "null");
+      if (!userData) {
+        alert("Please log in first to place an order.");
+        window.location.href = "login.html";
+        return;
+      }
+      // continue with order if logged in
+      const qty = parseInt(document.getElementById("qty").value) || 1;
+      const dish = document.getElementById("food-name").textContent;
+      const priceText = document.getElementById("food-price").textContent;
+      const price = parseFloat(priceText.replace(/\D/g, "")) || 0;
+      const img = document.getElementById("food-img").src;
+
+      const params = new URLSearchParams();
+      params.set("dish", dish);
+      params.set("qty", qty);
+      params.set("price", price);
+      params.set("img", img);
+      params.set("deliveryFee", deliveryFee);
+
+      window.location.href = `Order.html?${params.toString()}`;
+    }
+
+    loadDish();
+</script>
+<script src="../script/food.js"></script>
+</body>
+</html>

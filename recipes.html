@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+   <link rel="stylesheet" href="../css/food.css">
+     <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+    </head>
+<body>   
+<!----HEADER SECTION START-->
+<header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+    <nav class="navbar">
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+          <!-- User icon -->
+          <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+          <!-- Dropdown -->
+          <div id="userDropdown"
+            style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+            <p id="fullNameDisplay"></p>
+            <button id="logoutBtn" class="btn">Logout</button>
+          </div>
+        </div>
+      </div>
+</header>
+<!----HEADER SECTION END-->
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+  <input type="search" id="search-box" placeholder="Search Here...">
+  <button type="submit"><i class="fas fa-search"></i></button>
+  <i class="fas fa-times" id="close"></i>
+</form>
+<!--home-->
+<section class="home" id="home">
+    <div class=" slide">
+        <div class="content">
+            <h3 class="fade-item delay1">Recipes</h3>
+            <span class="span fade-item delay2">Quick Recipes </span>
+        </div>
+</div>
+</section>
+    <h1 class="heading">Our Recipes</h1>
+  <div id="recipeContainer" class="recipe-container"></div>
+  <!--footer section-->
+  <footer class="footer">
+    <div class="box-containers">
+      <div class="box">
+        <h2>quick links</h2>
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a>
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a>
+      </div>
+      <div class="box">
+        <h2>contact info</h2>
+        <a href="tel:+032-450-51065">+032-450-51065</a>
+        <a href="tel:+03278736385">+032-787-36385</a>
+        <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+        <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+        <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a>
+      </div>
+      <div class="box">
+        <h2>opening hours</h2>
+        <i>Every day</i>
+        <i>10:00Am - 12:00Pm</i>
+        <i>location</i>
+        <i>Garjakh, Gujranwala</i>
+      </div>
+      <div class="box">
+        <h2>follow us</h2>
+        <a href="https://www.facebook.com">facebook</a>
+        <a href="https://www.facebook.com">twitter</a>
+        <a href="https://www.facebook.com">instagram</a>
+        <a href="https://www.facebook.com">linkedIn</a>
+      </div>
+    </div>
+    <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+  </footer>
+   <script>
+    const API_URL = "http://localhost:8080/api/recipes";
+    const BASE_URL = "http://localhost:8080";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadRecipes();
+
+      // Close all when clicking outside any card
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".remedy.show").forEach(r => r.classList.remove("show"));
+      });
+    });
+
+    // Load Recipes into the grid
+    async function loadRecipes() {
+      try {
+        const res = await fetch(API_URL);
+        const recipes = await res.json();
+
+        const container = document.getElementById("recipeContainer");
+        if (!container) return;
+
+        container.innerHTML = recipes.map(r => {
+          const imgUrl = r.image?.startsWith("/uploads")
+            ? `${BASE_URL}${r.image}`
+            : `${BASE_URL}/uploads/${r.image}`;
+          return `
+            <div class="recipe-card" onclick="toggleRemedy(event, this)">
+              <img src="${imgUrl}" alt="${r.title}">
+              <h3>${r.title}</h3>
+              <div class="remedy"><p>${r.remedy}</p></div>
+            </div>
+          `;
+        }).join("");
+      } catch (e) {
+        console.error("Failed to load recipes:", e);
+        const container = document.getElementById("recipeContainer");
+        if (container) container.innerHTML = "<p>Failed to load recipes.</p>";
+      }
+    }
+
+    // Open one, close others. Click outside closes all.
+    function toggleRemedy(ev, card) {
+      ev.stopPropagation(); // don't trigger the document click
+
+      const remedy = card.querySelector(".remedy");
+      const isOpen = remedy.classList.contains("show");
+
+      // close all first
+      document.querySelectorAll(".remedy.show").forEach(r => r.classList.remove("show"));
+
+      // toggle current
+      if (!isOpen) remedy.classList.add("show");
+    }
+  </script>
+
+    <script src="../script/food.js"></script>
+    </body> 
+    </html>
+ 

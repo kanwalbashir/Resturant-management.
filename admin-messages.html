@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <title>Admin Panel - Messages</title>
+    </head>
+    <body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Admin Panel</a>
+        <nav class="navbar">
+            <a href="admin.html">Dashboard</a>
+            <a href="admin-menu.html"> Dishes</a>
+            <a href="admin-orders.html">Orders</a>
+            <a href="admin-reservations.html">Reservations</a>
+            <a href="admin-users.html">Users</a>
+            <a href="admin-messages.html">Messages</a>
+            <a href="admin-recipies.html">Recipies</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <a href="#" id="logoutBtn" class="fas fa-sign-out-alt"></a>
+        </div>
+    </header>
+    <h1>Manage Messages</h1>
+<div id="messages-container"></div>
+<footer class="footer">
+    <div class="credit">Admin Panel © 2025 - <span>Taste Haven</span></div>
+</footer>
+<script>
+    async function loadMessages() {
+            const res = await fetch("http://localhost:8080/api/contact");
+            const messages = await res.json();
+            const container = document.getElementById("messages-container");
+            container.innerHTML = "";
+
+            messages.forEach(msg => {
+                const div = document.createElement("div");
+                div.classList.add("message");
+                div.innerHTML = `
+            <p><strong>${msg.name}:</strong> ${msg.message}</p>
+            ${msg.reply ? `<p class="reply"><strong>Admin reply:</strong> ${msg.reply}</p>` : ''}
+            <div class="buttons">
+                ${!msg.reply ? `<button class="edit-btn" onclick="replyMessage('${msg._id}')">Reply</button>` : ''}
+                <button class="delete-btn" onclick="deleteMessage('${msg._id}')">Delete</button>
+            </div>
+        `;
+                container.appendChild(div);
+            });
+        }
+
+        async function replyMessage(id) {
+            const reply = prompt("Enter your reply:");
+            if (!reply) return;
+            await fetch(`http://localhost:8080/api/contact/reply/${id}`, {   // use backticks
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reply })
+            });
+            loadMessages();
+        }
+        async function deleteMessage(id) {
+            if (!confirm("Are you sure you want to delete this message?")) return;
+            await fetch(`http://localhost:8080/api/contact/${id}`, { method: "DELETE" });
+            loadMessages();
+        }
+        // Load messages on page load
+        loadMessages();
+</script>
+<script src="../script/admin.js"></script>
+
+    

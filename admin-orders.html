@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - order</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+</head>
+<header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Admin Panel</a>
+    <nav class="navbar">
+        <a href="admin.html">Dashboard</a>
+        <a href="admin-menu.html"> Dishes</a>
+        <a href="admin-orders.html">Orders</a>
+        <a href="admin-reservations.html">Reservations</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-messages.html">Messages</a>
+        <a href="admin-recipies.html">Recipies</a>
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <a href="#" id="logoutBtn" class="fas fa-sign-out-alt"></a>
+    </div>
+</header>
+<h1>Manage Orders</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Items</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="orderTable">
+        <!-- Orders will be loaded here -->
+    </tbody>
+</table>
+<footer class="footer">
+    <div class="credit">Admin Panel © 2025 - <span>Taste Haven</span></div>
+</footer>
+<script>
+    async function loadOrders() {
+        try {
+            const res = await fetch("http://localhost:8080/api/orders");
+            const orders = await res.json();
+            const tbody = document.getElementById("orderTable");
+            tbody.innerHTML = "";
+
+            orders.forEach((order, index) => {
+                // Merge duplicate items
+                const merged = {};
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(i => {
+                        if (!merged[i.name]) merged[i.name] = { qty: i.qty, price: i.price };
+                        else merged[i.name].qty += i.qty;
+                    });
+                }
+
+                const foodNames = Object.keys(merged).join(", ") || "No Items";
+                const quantities = Object.values(merged).map(i => i.qty).join(", ") || "0";
+                const totalPrice = Object.entries(merged).reduce((sum, [dish, val]) => sum + (val.price * val.qty), 0);
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${order.name}</td>
+        <td>${order.phone}<br>${order.address}</td>
+        <td>${foodNames}</td>
+        <td>${quantities}</td>
+        <td>Rs. ${totalPrice}</td>
+        <td>
+            <select onchange="updateStatus('${order._id}', this.value)">
+                <option ${order.status === "Pending" ? "selected" : ""}>Pending</option>
+                <option ${order.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
+                <option ${order.status === "On the Way" ? "selected" : ""}>On the Way</option>
+                <option ${order.status === "Delivered" ? "selected" : ""}>Delivered</option>
+                <option ${order.status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+            </select>
+        </td>`;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Failed to load orders:", err);
+        }
+    }
+
+    async function updateStatus(id, status) {
+        try {
+            const res = await fetch(`http://localhost:8080/api/orders/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) {
+                alert(`Order status updated to "${status}" and user notified via email!`);
+                loadOrders();
+            } else {
+                const data = await res.json();
+                alert(`Failed to update status: ${data.message || "Unknown error"}`);
+            }
+        } catch (err) {
+            console.error("Failed to update status:", err);
+            alert("Server error. Could not update order.");
+        }
+    }
+
+    // Load orders on page load
+    loadOrders();
+    </script>
+<script src="../script/admin.js"></script>
+</body>
+</html>

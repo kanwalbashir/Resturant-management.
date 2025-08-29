@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact </title>
+    <!--font awesome cdn link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- custom csss file link-->
+     <link rel="stylesheet" href="../css/food.css">
+     <link rel="shortcut icon" href="../img/12.png" type="image/x-icon">
+  <title>Contact Us</title>
+<link rel="stylesheet" href="../css/food.css">
+</head>
+<body>
+<!----HEADER SECTION START-->
+<header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Taste haven</a>
+    <nav class="navbar">
+        <a href="food.html">Home</a>
+        <a href="Menu.html">Menu</a>
+        <a href="Order.html">Order</a>
+        <a href="Reservation.html">Reservation</a>
+        <a href="About.html">About</a> 
+        <a href="Recipes.html">Recipes</a>
+        <a href="Contact.html">Contact us</a> 
+    </nav>
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <div id="userMenu" style="position:relative">
+            <!-- User icon -->
+            <a href="javascript:void(0)" id="userIcon" class="user-icon fas fa-user"></a>
+            <!-- Dropdown -->
+            <div id="userDropdown"
+                style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; padding:10px; min-width:150px; z-index:100;">
+                <p id="fullNameDisplay"></p>
+                <button id="logoutBtn" class="btn">Logout</button>
+            </div>
+        </div>
+    </div>
+</header>
+<!----HEADER SECTION END-->
+<!-- SEARCH  -->
+<form id="search-form" onsubmit="return searchFood()">
+    <input type="search" id="search-box" placeholder="Search Here...">
+    <button type="submit"><i class="fas fa-search"></i></button>
+    <i class="fas fa-times" id="close"></i>
+</form>
+<!--home-->
+<section class="home" id="home">
+    <div class=" slide">
+        <div class="content">
+            <h3 class="fade-item delay1 ">Contact Us</h3>
+            <span class="span fade-item delay2 "> Ask a Question </span>
+        </div>
+    </div>
+</section>
+     <section class="contact" id="contact">
+        <div class="content1">
+            <h1 class="heading">Contact Us</h1>
+            <form id="contactForm">
+                <div class="input-group">
+                    <input type="text" id="userName" placeholder="Name" required>
+                    <input type="email"id="userEmail"placeholder="Email" required>
+                    <input type="tel" id="userPhone" placeholder="Phone" required>
+            <textarea id="message" placeholder="Your Question / Message..." required></textarea>
+                </div>
+                <input type="submit" value="Submit" class="btn largebtn">
+            </form>
+        </div>
+    </section>
+    <h2 style="margin-top:30px;">Customer Question </h2>
+    <div id="messagesContainer"></div>
+    <!--footer section-->
+    <footer class="footer">
+        <div class="box-containers">
+            <div class="box">
+                <h2>quick links</h2>
+                <a href="food.html">Home</a>
+                <a href="Menu.html">Menu</a>
+                <a href="Order.html">Order</a>
+                <a href="Reservation.html">Reservation</a>
+                <a href="About.html">About</a>
+                <a href="Recipes.html">Recipes</a>
+                <a href="Contact.html">Contact us</a>
+            </div>
+            <div class="box">
+                <h2>contact info</h2>
+                <a href="tel:+032-450-51065">+032-450-51065</a>
+                <a href="tel:+03278736385">+032-787-36385</a>
+                <a href="mailto:ummequean123@gmail.com">ummequean123@gmail.com</a>
+                <a href="mailto:dua7214@gmail.com">dua47214@gmail.com</a>
+                <a href="mailto:konwalkonwalbashir@gmail.com">konwalkonwalbashir@gmail.com</a>
+            </div>
+            <div class="box">
+                <h2>opening hours</h2>
+                <i>Every day</i>
+                <i>10:00Am - 12:00Pm</i>
+                <i>location</i>
+                <i>Garjakh, Gujranwala</i>
+    
+            </div>
+            <div class="box">
+                <h2>follow us</h2>
+                <a href="https://www.facebook.com">facebook</a>
+                <a href="https://www.facebook.com">twitter</a>
+                <a href="https://www.facebook.com">instagram</a>
+                <a href="https://www.facebook.com">linkedIn</a>
+            </div>
+        </div>
+        <div class="credit">copyright @ 2025 by <span>HDK</span></div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("contactForm");
+
+            // Load all messages
+           async function loadMessages() {
+                try {
+                    const res = await fetch("http://localhost:8080/api/contact");
+                    const messages = await res.json();
+
+                    const container = document.getElementById("messagesContainer");
+                    container.innerHTML = "";
+                   //  Only show messages where admin gave a reply
+                    const repliedMessages = messages.filter(msg => msg.reply && msg.reply.trim() !== "");
+
+                    if (!repliedMessages.length) {
+                        container.innerHTML = "<p>No replies from admin yet.</p>";
+                        return;
+                    }
+
+                    repliedMessages.forEach(msg => {
+                        container.innerHTML += `
+                <div class="card">
+                    <p><b>${msg.name}</b> (${msg.email})</p>
+                    <p><b>User Question:</b> ${msg.message}</p>
+                    <p style="color:green;"><b>Admin Reply:</b> ${msg.reply}</p>
+                    <small class="muted">${new Date(msg.date).toLocaleString()}</small>
+                </div>
+            `;
+                    });
+                } catch (err) {
+                    console.error("Error loading messages", err);
+                }
+            }
+            // Send message
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById("userName").value.trim();
+                const email = document.getElementById("userEmail").value.trim();
+                const phone = document.getElementById("userPhone").value.trim();
+                const message = document.getElementById("message").value.trim();
+
+                try {
+                    const res = await fetch("http://localhost:8080/api/contact", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, email, phone, message })
+                    });
+
+                    const data = await res.json();
+                    alert(data.message);
+                    form.reset();
+                    loadMessages();
+                } catch (err) {
+                    console.error("Error:", err);
+                    alert("Something went wrong.");
+                }
+            });
+
+            // Initial load
+            loadMessages();
+        });
+    </script>
+<script src="../script/food.js"></script>
+</body>
+</html>

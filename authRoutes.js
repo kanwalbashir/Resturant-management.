@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../model/authModel');
+const { registerController,auth,verifyOtp, adminOnly,logout,createAdmin,getMe, loginController,getUsers,resetPassword ,deleteUser } = require('../controller/authController');
+router.post('/register', registerController);
+router.post('/login', loginController);
+router.post("/add-admin", auth, adminOnly, createAdmin);
+router.get('/users', getUsers);
+router.get('/me', getMe);
+router.delete('/users/:id', deleteUser);
+router.post('/reset-password',resetPassword);
+router.post("/logout",logout);
+router.post("/verify-otp", verifyOtp);
+module.exports = router;
